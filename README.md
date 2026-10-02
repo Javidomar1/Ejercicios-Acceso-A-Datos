@@ -19,7 +19,7 @@ Haz clic en cualquiera de los enlaces para abrir directamente el código fuente 
 
 ### ☕ Ejercicio 1
 * **Archivo:** [Ejercicio_1.java](Ejercicio_1/src/main/java)
-* **Descripción:** Lectura y escritura de ficheros.
+* **Descripción:** Escritura de ficheros, directorios y lectura  .
 
 ### ☕ Ejercicio 2
 * **Archivo:** [Ejercicio_2.java](Ejercicio_2/src/main/java/ejer2)

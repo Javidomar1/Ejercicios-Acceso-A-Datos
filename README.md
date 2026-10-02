@@ -25,4 +25,6 @@ Haz clic en cualquiera de los enlaces para abrir directamente el código fuente 
 * **Archivo:** [Ejercicio_2.java](Ejercicio_2/src/main/java/ejer2)
 * **Descripción:** Creación de archivos con .nio y .io .
 
-
+------------------------------------------
+" La mascota de Java es Duke "
+------------------------------------------

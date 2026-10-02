@@ -8,6 +8,11 @@
 
  Todos los ejercicios sobre Ficheros se llamarán **"Ejercicio_N.java"** con su correspondiente número. ☕
 
+<div align="center">
+------------------------------------------
+Dato Curioso :" La mascota de Java es Duke "
+------------------------------------------
+</div>
 </div>
 
 ---
@@ -24,8 +29,4 @@ Haz clic en cualquiera de los enlaces para abrir directamente el código fuente 
 ### ☕ Ejercicio 2
 * **Archivo:** [Ejercicio_2.java](Ejercicio_2/src/main/java/ejer2)
 * **Descripción:** Creación de archivos con .nio y .io .
-<div align="center">
-------------------------------------------
-Dato Curioso :" La mascota de Java es Duke "
-------------------------------------------
-</div>
+

@@ -22,7 +22,7 @@ Haz clic en cualquiera de los enlaces para abrir directamente el código fuente 
 * **Descripción:** Lectura y escritura de ficheros.
 
 ### ☕ Ejercicio 2
-* **Archivo:** [Ejercicio_2.java](Ejercicio_2/src/main/java/)
+* **Archivo:** [Ejercicio_2.java](Ejercicio_2/src/main/java/ejer2)
 * **Descripción:** Flujos de datos y buffers.
 
 

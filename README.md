@@ -18,11 +18,11 @@ Haz clic en cualquiera de los enlaces para abrir directamente el código fuente 
 ## 📑 Índice de Ejercicios
 
 ### ☕ Ejercicio 1
-* **Archivo:** [Ejercicio_1.java](Ejercicio_1/Ejercicio_1/src/main/java/)
+* **Archivo:** [Ejercicio_1.java](Ejercicio_2/src/main/java/)
 * **Descripción:** Lectura y escritura de ficheros.
 
 ### ☕ Ejercicio 2
-* **Archivo:** [Ejercicio_2.java](Ejercicio_2/Ejercicio_2/src/main/java/ejer2)
+* **Archivo:** [Ejercicio_2.java](Ejercicio_2/src/main/java/)
 * **Descripción:** Flujos de datos y buffers.
 
 

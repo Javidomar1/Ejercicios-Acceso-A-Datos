@@ -26,6 +26,6 @@ Haz clic en cualquiera de los enlaces para abrir directamente el código fuente 
 * **Descripción:** Creación de archivos con .nio y .io .
 <div align="center">
 ------------------------------------------
-" La mascota de Java es Duke "
+Dato Curioso :" La mascota de Java es Duke "
 ------------------------------------------
 </div>

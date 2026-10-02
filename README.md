@@ -18,7 +18,7 @@ Haz clic en cualquiera de los enlaces para abrir directamente el código fuente 
 ## 📑 Índice de Ejercicios
 
 ### ☕ Ejercicio 1
-* **Archivo:** [Ejercicio_1.java](Ejercicio_2/src/main/java/)
+* **Archivo:** [Ejercicio_1.java](Ejercicio_1/src/main/java)
 * **Descripción:** Lectura y escritura de ficheros.
 
 ### ☕ Ejercicio 2

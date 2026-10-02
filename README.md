@@ -14,12 +14,6 @@ Dato Curioso :" La mascota de Java es Duke "
 ------------------------------------------
 </div>
 </div>
-
----
-
-## 📑 Índice Rápido a los Archivos
-
-Haz clic en cualquiera de los enlaces para abrir directamente el código fuente del ejercicio:
 ## 📑 Índice de Ejercicios
 
 ### ☕ Ejercicio 1 : [Ejercicio_1.java](Ejercicio_1/src/main/java)

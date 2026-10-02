@@ -23,6 +23,6 @@ Haz clic en cualquiera de los enlaces para abrir directamente el código fuente 
 
 ### ☕ Ejercicio 2
 * **Archivo:** [Ejercicio_2.java](Ejercicio_2/src/main/java/ejer2)
-* **Descripción:** Flujos de datos y buffers.
+* **Descripción:** Creación de archivos con .nio y .io .
 
 

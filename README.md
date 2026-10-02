@@ -22,9 +22,9 @@ Dato Curioso :" La mascota de Java es Duke "
 Haz clic en cualquiera de los enlaces para abrir directamente el código fuente del ejercicio:
 ## 📑 Índice de Ejercicios
 
-### ☕ Ejercicio 1 : Archivo:** [Ejercicio_1.java](Ejercicio_1/src/main/java)
+### ☕ Ejercicio 1 : Archivo: [Ejercicio_1.java](Ejercicio_1/src/main/java)
 * **Descripción:** Escritura de ficheros, directorios y lectura  .
 
-### ☕ Ejercicio 2 : Archivo:** [Ejercicio_2.java](Ejercicio_2/src/main/java/ejer2)
+### ☕ Ejercicio 2 : Archivo: [Ejercicio_2.java](Ejercicio_2/src/main/java/ejer2)
 * **Descripción:** Creación de archivos con .nio y .io .
 

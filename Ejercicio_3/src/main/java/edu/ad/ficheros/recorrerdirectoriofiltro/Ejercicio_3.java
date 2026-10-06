@@ -6,20 +6,28 @@ package edu.ad.ficheros.recorrerdirectoriofiltro;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.Scanner;
 
 /**
  *
  * @author javier.dommar
  */
-public class RecorrerDirectorioFiltro {
+public class Ejercicio_3 {
 
 	public static void main(String[] args) {
 
 		// --- FORMA 1: Clase anonima (estilo clasico) ---
-		// Creamos el directorio y los ficheros .txt para luego
-		// poder comprobarlos
+
+		Scanner sc = new Scanner(System.in);
+		System.out.print("Introduce la extensión a buscar (ej. .txt): ");
+		final String filtroFinal = sc.nextLine();
+		sc.close();
+		System.out.println();
+		
 		File directorio = new File("datos");
 		File fichero = new File("datos/alumnos.txt");
+		// Creamos el directorio y los ficheros si no existen para luego
+		// poder comprobarlos
 		try {
 			if (!directorio.exists()) {
 				directorio.mkdir();
@@ -34,7 +42,7 @@ public class RecorrerDirectorioFiltro {
 		FilenameFilter soloTxt = new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String nombre) {
-				return nombre.toLowerCase().endsWith(".txt");
+				return nombre.toLowerCase().endsWith(filtroFinal.toLowerCase());
 			}
 		};
 		File[] FicherosTxt = directorio.listFiles(soloTxt);

@@ -22,3 +22,5 @@ Dato Curioso :" La mascota de Java es Duke "
 ### ☕ Ejercicio 2 : [Ejercicio_2.java](Ejercicio_2/src/main/java/ejer2)
 * **Descripción:** Creación de archivos con .nio y .io .
 
+### ☕ Ejercicio 2 : [Ejercicio_3.java](Ejercicio_3/src/main/java/edu/ad/ficheros/recorrerdirectoriofiltro)
+* **Descripción:** Recorrer un directorio con filtro

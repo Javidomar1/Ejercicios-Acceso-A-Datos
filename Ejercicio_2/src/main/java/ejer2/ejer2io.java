@@ -24,9 +24,9 @@ public class ejer2io {
 				new OutputStreamWriter(new FileOutputStream("datosio.txt"), StandardCharsets.UTF_8))) {
 
 			bw.write("modulo,evaluacion,nota\n");
-			bw.write("Acceso a datos,1º Evaluacion,8.5\n");
-			bw.write("Programacion,2º Evaluacion,7.0\n");
-			bw.write("Base de datos,1º Evaluacion,9.0\n");
+			bw.write("Acceso a datos,1ï¿½ Evaluacion,8.5\n");
+			bw.write("Programacion,2ï¿½ Evaluacion,7.0\n");
+			bw.write("Base de datos,1ï¿½ Evaluacion,9.0\n");
 
 			System.out.println("Archivo datos_io.csv generado correctamente.");
 
@@ -45,6 +45,6 @@ public class ejer2io {
 			System.err.println("Error al leer: " + e.getMessage());
 		}
 
-	}
+	} 
 
 }

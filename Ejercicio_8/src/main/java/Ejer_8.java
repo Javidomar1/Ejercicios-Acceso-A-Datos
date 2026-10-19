@@ -11,6 +11,7 @@ import java.util.Scanner;
 import java.util.stream.Stream;
 
 public class Ejer_8 {
+	// Path define una ruta relativa
 	private static Path RUTA = Paths.get("alumnos.txt");
 
 	public static void main(String[] args) throws IOException {
@@ -69,7 +70,13 @@ public class Ejer_8 {
 	}
 
 	private static void altaAlumnoPrueba(String datos) {
+		// StandardCharsets.UTF_8: garantiza que tildes, 'ñ' y caracteres especiales no
+		// se corrompan.
 		try {
+			// Files.writeString() escribe texto directamente en la ruta especificada.
+			// System.lineSeparator(): inserta el salto de línea
+			// StandardOpenOption.CREATE: crea el archivo si no existe previamente. y APPEN
+			// añade el contenido al final sin sobrescribir
 			Files.writeString(RUTA, datos + System.lineSeparator(), StandardCharsets.UTF_8, StandardOpenOption.CREATE,
 					StandardOpenOption.APPEND);
 			System.out.println("Insertado: " + datos);
@@ -83,11 +90,14 @@ public class Ejer_8 {
 
 		// He elegido Stream en vez RealAllLines si el archivo se
 		// ampliara aparte de ser mas corto el comando no carga todo en memoria
+		// File.lines devuelve un Stream<String> perezoso (lazy): lee línea a línea
+		// sobre la marcha
 
 		try (Stream stream = Files.lines(RUTA, StandardCharsets.UTF_8)) {
+			// stream.forEach() recorre cada elemento consumido bajo demanda
 			stream.forEach(System.out::println);
 		} catch (IOException e) {
-			System.err.println("Error al insertar el alumno: " + e.getMessage());
+			System.err.println("Error al leer " + e.getMessage());
 		}
 		System.out.println();
 	}
@@ -96,7 +106,7 @@ public class Ejer_8 {
 		int contador = 0;
 		try {
 			// Lo guardamos en una lista una vez leido todas las lineas
-
+			// Files.readAllLines: Lee el archivo completo y lo guarda en una List<String>.
 			List<String> lineas = Files.readAllLines(RUTA, StandardCharsets.UTF_8);
 			boolean encontrado = false;
 			for (int i = 0; i < lineas.size(); i++) {
@@ -125,7 +135,8 @@ public class Ejer_8 {
 
 	private static void contarAlumnosPrueba() {
 
-		// Aqui un steam como el de leer pero en este caso con la opcion de contar
+		// Usamos Files.lines() junto con stream.count()esto cuenta las líneas
+		// sobre la marcha de forma eficiente
 
 		try (Stream<String> stream = Files.lines(RUTA, StandardCharsets.UTF_8)) {
 			long total = stream.count();

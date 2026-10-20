@@ -24,3 +24,8 @@ Dato Curioso :" La mascota de Java es Duke "
 
 ### ☕ Ejercicio 3 : [Ejercicio_3.java](Ejercicio_3/src/main/java/edu/ad/ficheros/recorrerdirectoriofiltro)
 * **Descripción:** Recorrer un directorio con filtro
+
+### ☕ Ejercicio PNE. [Ejercicios Flujos de caracteres](FlujosDeCaracteres/src/main/java/edu/ad/ficheros/flujosdecaracteres)
+* **Descripción:** Practica de Flujo de Caracteres
+### ☕ Ejercicio 8 : [Ejercicio 8 Gestor de alumnos en fichero de texto](Ejercicio_8/src/main/java)
+* **Descripción:** Practica de uso de Lectura,Escritura,Mostrar y buscar

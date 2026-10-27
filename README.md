@@ -29,3 +29,5 @@ Dato Curioso :" La mascota de Java es Duke "
 * **Descripción:** Practica de Flujo de Caracteres
 ### ☕ Ejercicio 8 : [Ejercicio 8 Gestor de alumnos en fichero de texto](Ejercicio_8/src/main/java)
 * **Descripción:** Practica de uso de Lectura,Escritura,Mostrar y buscar
+### ☕ Ejercicio 9 : [Ejercicio_9](Ejercicio_9)
+* **Descripción:** gestión de productos en productos.csv, desarrolla una aplicación Java de consola llamada GestorProductosRA1.

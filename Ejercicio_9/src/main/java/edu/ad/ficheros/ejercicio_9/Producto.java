@@ -7,7 +7,6 @@ public class Producto {
     private double Precio;
 
     public Producto(int id, String nombre, double precio) {
-        // Validaciones recuperadas de tu versión anterior
         if (id <= 0) {
             throw new IllegalArgumentException("El ID debe ser mayor que 0");
         }
@@ -18,7 +17,6 @@ public class Producto {
             throw new IllegalArgumentException("El precio no puede ser negativo");
         }
         
-        // Asignación correcta: el atributo en mayúscula recibe el parámetro en minúscula
         this.ID = id;
         this.Nombre = nombre;
         this.Precio = precio;

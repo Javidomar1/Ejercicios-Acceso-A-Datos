@@ -23,7 +23,7 @@ import java.util.Scanner;
  *
  * @author javier.dommar
  */
-public class Ejercicio_9 {
+public class GestorProductosRA1 {
 
     public static Path rutacsv = Paths.get("datos/productos.csv");
     public static Scanner sc = new Scanner(System.in);
@@ -61,6 +61,8 @@ public class Ejercicio_9 {
             System.out.println("5. Eliminar producto");
             System.out.println("6. Exportar CSV a TSV");
             System.out.println("7. Importar TSV a CSV");
+            System.out.println("8. Crear copia de seguridad");
+            System.out.println("9. Listar copias de seguridad");
 
             String opcion = sc.nextLine();
 
@@ -99,6 +101,15 @@ public class Ejercicio_9 {
                 case "7":
                     importarDeTsv();
                     break;
+                case "8":
+                    crearCopiaSeguridad();
+                    break;
+                case "9":
+                    listarBackups();
+                    break;
+                case "0":
+                    System.out.println("¡Saliendo del programa. Hasta pronto!");
+                    return; 
                 default:
                     System.out.println("Opción no válida.");
             }
@@ -110,6 +121,8 @@ public class Ejercicio_9 {
         try {
             System.out.println("Escribe el id del producto");
             int id = Integer.parseInt(sc.nextLine());
+            //Antes de tocar el archivo o crear el objeto, comprobamos si el ID ya existe leyendo el CSV.
+            //Si existe, cortamos la ejecución con 'return' para evitar duplicados.
             if (existeID(id)) {
                 System.out.println("Error: El ID " + id + " ya existe en el fichero.");
                 return;
@@ -118,10 +131,13 @@ public class Ejercicio_9 {
             String nombre = sc.nextLine();
             System.out.print("Introduce el precio: ");
             double precio = Double.parseDouble(sc.nextLine());
-
+            //Crea el objeto en memoria.
+            //Si el precio es negativo o el nombre está vacío,
+            //el constructor lanzará un IllegalArgumentException que será atrapado más abajo.
             Producto p = new Producto(id, nombre, precio);
             //FileWriter(ruta, true): el segundo parámetro 'true' activa el modo append
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(rutacsv.toFile(), true))) {
+                //los datos del objeto los separamos con punto y coma, formando la línea estructurada.
                 bw.write(p.getID() + ";" + p.getNombre() + ";" + p.getPrecio());
                 bw.newLine();
                 System.out.println("Producto añadido correctamente.");
@@ -136,14 +152,23 @@ public class Ejercicio_9 {
 
     }
 
+    /**
+     * Lee el archivo CSV secuencialmente, salta la cabecera y muestra por
+     * consola todos los productos registrados.
+     */
     public static void listarProductos() {
+
         try (BufferedReader br = Files.newBufferedReader(rutacsv)) {
             br.readLine();
             String linea;
-
+            //
             while ((linea = br.readLine()) != null) {
-                String[] campos = linea.split(";", -1); // Conserva tokens vacíos
-
+                //Corta la línea de texto cada vez que encuentra un punto y coma (;)
+                String[] campos = linea.split(";", -1);
+                //Comprueba que el split haya generado exactamente 3 trozos (ID, Nombre, Precio)
+                //y que el primer trozo (el ID) no esté vacío
+                //El '-1' obliga a conservar los trozos aunque estén vacíos al final de la línea, 
+                //evitando errores si falta un dato.
                 if (campos.length == 3 && !campos[0].isEmpty()) {
                     int id = Integer.parseInt(campos[0]);
                     String nombre = campos[1];
@@ -154,6 +179,7 @@ public class Ejercicio_9 {
                     System.out.println(producto.toString());
                 }
             }
+
         } catch (FileNotFoundException e) {
             System.err.println("Fichero no encontrado: " + e.getMessage()); // Captura específica primero
         } catch (IOException e) {
@@ -163,18 +189,22 @@ public class Ejercicio_9 {
 
     public static boolean existeID(int idBuscar) throws IOException {
         File archivo = rutacsv.toFile();
+        //Comprobación rápida de seguridad. Si el archivo ni siquiera existe todavía,
+        //es imposible que el ID esté ahí, así que devuelve false directamente sin hacer nada más.
         if (!archivo.exists()) {
             return false;
         }
         try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
             String linea;
             boolean primeraLinea = true;
-
+            //Saltar cabecera
             while ((linea = br.readLine()) != null) {
                 if (primeraLinea) {
                     primeraLinea = false;
                     continue;
                 }
+                //El '-1' obliga a conservar los trozos aunque estén vacíos al final de la línea, evitando errores si falta un dato.
+                //Verifica que el array tenga al menos 1 posición (el ID)y que no sea un texto en blanco
                 String[] campos = linea.split(";", -1);
                 if (campos.length >= 1 && !campos[0].isEmpty()) {
                     int idActual = Integer.parseInt(campos[0]);
@@ -187,6 +217,10 @@ public class Ejercicio_9 {
         }
     }
 
+    /**
+     * Solicita un ID por teclado, busca el producto correspondiente y muestra
+     * sus detalles por consola.
+     */
     public static Producto buscarProductoPorId(int idBuscar) throws IOException {
         File archivo = rutacsv.toFile();
         if (!archivo.exists()) {
@@ -203,14 +237,15 @@ public class Ejercicio_9 {
                     continue;
                 }
                 String[] campos = linea.split(";", -1);
-
+                //Valida que la línea tenga exactamente 3 campos
                 if (campos.length == 3 && !campos[0].isEmpty()) {
                     int idActual = Integer.parseInt(campos[0]);
-
+                    //Compara el ID actual del archivo con el que estamos buscando.
                     if (idActual == idBuscar) {
                         String nombre = campos[1];
                         double precio = Double.parseDouble(campos[2]);
-                        return new Producto(idActual, nombre, precio); // Lo devuelve limpio, sin imprimir
+                        //Al encontrarlo, construye y devuelve el objeto Producto listo para usarse
+                        return new Producto(idActual, nombre, precio);
                     }
                 }
             }
@@ -218,6 +253,12 @@ public class Ejercicio_9 {
         return null;
     }
 
+    /**
+     * Solicita un ID al usuario y, si existe, pide los nuevos datos para
+     * actualizarlo. Utiliza el patrón de lectura total en memoria y reescritura
+     * completa del archivo.
+     *
+     */
     public static void modificarProducto() {
         try {
             System.out.print("ID del producto a modificar: ");
@@ -233,10 +274,10 @@ public class Ejercicio_9 {
             System.out.print("Nuevo precio: ");
             double precio = Double.parseDouble(sc.nextLine());
 
-            // Se crea antes de tocar el fichero: si los datos no son válidos, salta la excepción aquí
+            //Se crea antes de tocar el fichero: si los datos no son válidos, salta la excepción aquí
             Producto p = new Producto(id, nombre, precio);
 
-            // 1. Leer todas las líneas
+            //Leer todas las líneas
             List<String> lineas = new ArrayList<>();
             try (BufferedReader br = new BufferedReader(new FileReader(rutacsv.toFile()))) {
                 String linea;
@@ -245,7 +286,7 @@ public class Ejercicio_9 {
                 }
             }
 
-            // 2. Localizar el ID y sustituir la línea (i = 1 salta la cabecera)
+            //Localizar el ID y sustituir la línea (i = 1 salta la cabecera)
             for (int i = 1; i < lineas.size(); i++) {
                 String[] campos = lineas.get(i).split(";", -1);
                 if (campos[0].equals(String.valueOf(id))) {
@@ -254,7 +295,7 @@ public class Ejercicio_9 {
                 }
             }
 
-            // 3. Reescribir el fichero completo (sin append)
+            //Reescribir el fichero completo (sin append)
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(rutacsv.toFile()))) {
                 for (String l : lineas) {
                     bw.write(l);
@@ -272,18 +313,26 @@ public class Ejercicio_9 {
         }
     }
 
+    /**
+     * Método auxiliar que vuelca todo el contenido del archivo CSV en memoria.
+     *
+     * @return Una lista de cadenas, donde cada elemento es una línea del
+     * archivo.
+     * @throws IOException Si ocurre un error de lectura durante el acceso al
+     * archivo.
+     */
     public static void eliminarProducto() {
         try {
             System.out.print("Escribe el ID del producto a eliminar: ");
             int idBuscar = Integer.parseInt(sc.nextLine());
 
-            // 1. Verificamos que el ID exista antes de tocar ficheros
+            //Verificamos que el ID exista antes de tocar ficheros
             if (!existeID(idBuscar)) {
                 System.out.println("No existe ningún producto con el ID " + idBuscar);
                 return;
             }
 
-            // 2. Leer todas las líneas conservando las que NO coinciden con el ID
+            //Leer todas las líneas conservando las que NO coinciden con el ID
             List<String> lineasConservadas = new ArrayList<>();
             try (BufferedReader br = new BufferedReader(new FileReader(rutacsv.toFile()))) {
                 String linea = br.readLine();
@@ -302,7 +351,7 @@ public class Ejercicio_9 {
                 }
             }
 
-            // 3. Reescribir a un fichero temporal (.tmp) por seguridad
+            //Reescribir a un fichero temporal (.tmp) por seguridad
             Path rutaTemp = Paths.get("datos/productos.csv.tmp");
             try (BufferedWriter bw = Files.newBufferedWriter(rutaTemp)) {
                 for (String l : lineasConservadas) {
@@ -311,7 +360,7 @@ public class Ejercicio_9 {
                 }
             }
 
-            // 4. Reemplazar el fichero original de forma atómica con NIO.2
+            //Reemplazar el fichero original de forma atómica con NIO.2
             Files.move(rutaTemp, rutacsv, StandardCopyOption.REPLACE_EXISTING);
             System.out.println("Producto eliminado correctamente.");
 
@@ -322,6 +371,10 @@ public class Ejercicio_9 {
         }
     }
 
+    /**
+     * Lee los datos del archivo CSV principal y genera copias exportadas en
+     * formato TSV (separado por tabuladores).
+     */
     public static void exportarATsv() {
         Path rutatsv = Paths.get("datos/productos.tsv");
 
@@ -347,6 +400,11 @@ public class Ejercicio_9 {
         }
     }
 
+    /**
+     * Lee el archivo TSV y sobrescribe el contenido del archivo CSV principal,
+     * transformando los tabuladores nuevamente en separadores de punto y coma
+     * (;).
+     */
     public static void importarDeTsv() {
         Path rutatsv = Paths.get("datos/productos.tsv");
         if (!Files.exists(rutatsv)) {
@@ -367,6 +425,49 @@ public class Ejercicio_9 {
 
         } catch (IOException e) {
             System.out.println("Error al importar desde TSV: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Realiza una copia de seguridad exacta del archivo CSV en la carpeta
+     * backups, añadiendo una marca de tiempo al nombre del archivo.
+     */
+    public static void crearCopiaSeguridad() {
+        try {
+            // Obtiene la fecha/hora exacta actual (LocalDateTime) y 
+            //crea una regla de formato (DateTimeFormatter) para convertirla en texto "AñoMesDía_HoraMinSeg".
+            java.time.LocalDateTime ahora = java.time.LocalDateTime.now();
+            java.time.format.DateTimeFormatter formato = java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+            String fecha = ahora.format(formato);
+
+            Path origen = rutacsv;
+            Path destino = Paths.get("backups/productos_" + fecha + ".csv");
+
+            if (Files.exists(origen)) {
+                Files.copy(origen, destino, StandardCopyOption.REPLACE_EXISTING);
+                System.out.println("Copia de seguridad creada: " + destino.getFileName());
+            } else {
+                System.out.println("No hay datos para respaldar.");
+            }
+        } catch (IOException e) {
+            System.out.println("Error al crear copia: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Escanea el directorio de copias de seguridad y muestra por consola los
+     * nombres de todos los archivos de respaldo disponibles.
+     */
+    public static void listarBackups() {
+        File dir = new File("backups/");
+        File[] archivos = dir.listFiles();
+        if (archivos == null || archivos.length == 0) {
+            System.out.println("No hay copias de seguridad disponibles.");
+        } else {
+            System.out.println("--- COPIAS DE SEGURIDAD ---");
+            for (File f : archivos) {
+                System.out.println("- " + f.getName());
+            }
         }
     }
 }

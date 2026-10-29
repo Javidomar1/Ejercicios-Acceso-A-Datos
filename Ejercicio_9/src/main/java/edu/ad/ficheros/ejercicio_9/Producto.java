@@ -8,13 +8,13 @@ public class Producto {
 
     public Producto(int id, String nombre, double precio) {
         if (id <= 0) {
-            throw new IllegalArgumentException("El ID debe ser mayor que 0");
+           throw new ProductoInvalidoException("El ID debe ser mayor que 0");
         }
         if (nombre == null || nombre.isEmpty()) {
-            throw new IllegalArgumentException("Debe tener nombre");
+            throw new ProductoInvalidoException("Debe tener nombre");
         }
         if (precio < 0) {
-            throw new IllegalArgumentException("El precio no puede ser negativo");
+            throw new ProductoInvalidoException("El precio no puede ser negativo");
         }
         
         this.ID = id;

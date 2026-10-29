@@ -20,12 +20,19 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
+ * Gestor de productos por consola sobre un fichero CSV.
  *
  * @author javier.dommar
  */
 public class GestorProductosRA1 {
 
+    /**
+     * Ruta del fichero CSV de productos.
+     */
     public static Path rutacsv = Paths.get("datos/productos.csv");
+    /**
+     * Scanner compartido para leer de consola.
+     */
     public static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -109,7 +116,7 @@ public class GestorProductosRA1 {
                     break;
                 case "0":
                     System.out.println("¡Saliendo del programa. Hasta pronto!");
-                    return; 
+                    return;
                 default:
                     System.out.println("Opción no válida.");
             }
@@ -117,6 +124,10 @@ public class GestorProductosRA1 {
 
     }
 
+    /**
+     * Pide por consola ID, nombre y precio, y añade el producto al final del
+     * fichero CSV si el ID no está repetido.
+     */
     public static void añadirProducto() {
         try {
             System.out.println("Escribe el id del producto");
@@ -187,6 +198,13 @@ public class GestorProductosRA1 {
         }
     }
 
+    /**
+     * Comprueba si ya existe un producto con el ID indicado en el CSV.
+     *
+     * @param idBuscar ID a comprobar
+     * @return {@code true} si el ID existe, {@code false} en caso contrario
+     * @throws IOException si ocurre un error al leer el fichero
+     */
     public static boolean existeID(int idBuscar) throws IOException {
         File archivo = rutacsv.toFile();
         //Comprobación rápida de seguridad. Si el archivo ni siquiera existe todavía,
@@ -218,8 +236,11 @@ public class GestorProductosRA1 {
     }
 
     /**
-     * Solicita un ID por teclado, busca el producto correspondiente y muestra
-     * sus detalles por consola.
+     * Busca un producto por su ID en el fichero CSV, sin imprimir nada.
+     *
+     * @param idBuscar ID del producto a buscar
+     * @return el {@link Producto} encontrado, o {@code null} si no existe
+     * @throws IOException si ocurre un error al leer el fichero
      */
     public static Producto buscarProductoPorId(int idBuscar) throws IOException {
         File archivo = rutacsv.toFile();
@@ -314,12 +335,8 @@ public class GestorProductosRA1 {
     }
 
     /**
-     * Método auxiliar que vuelca todo el contenido del archivo CSV en memoria.
-     *
-     * @return Una lista de cadenas, donde cada elemento es una línea del
-     * archivo.
-     * @throws IOException Si ocurre un error de lectura durante el acceso al
-     * archivo.
+     * Pide por consola un ID y elimina el producto correspondiente del fichero
+     * CSV, reescribiéndolo completo sin esa línea.
      */
     public static void eliminarProducto() {
         try {
@@ -387,6 +404,7 @@ public class GestorProductosRA1 {
                 bw.write(lineaTsv);
                 bw.newLine();
             }
+            System.out.println("Fichero exportado de CSV a TSV correctamente.");
             /*
              * ¿Qué ocurre si un nombre contiene ';' o un tabulador?
              * Si usamos un replace() o split() simple, el delimitador extra dividirá 

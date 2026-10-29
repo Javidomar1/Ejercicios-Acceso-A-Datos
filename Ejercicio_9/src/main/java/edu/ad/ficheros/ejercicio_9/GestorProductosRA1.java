@@ -18,7 +18,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 /**
  * Gestor de productos por consola sobre un fichero CSV.
  *
@@ -454,10 +455,12 @@ public class GestorProductosRA1 {
         try {
             // Obtiene la fecha/hora exacta actual (LocalDateTime) y 
             //crea una regla de formato (DateTimeFormatter) para convertirla en texto "AñoMesDía_HoraMinSeg".
-            java.time.LocalDateTime ahora = java.time.LocalDateTime.now();
-            java.time.format.DateTimeFormatter formato = java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
-            String fecha = ahora.format(formato);
+            String fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
 
+            
+            
+            
+            
             Path origen = rutacsv;
             Path destino = Paths.get("backups/productos_" + fecha + ".csv");
 

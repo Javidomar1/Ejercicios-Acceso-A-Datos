@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
 /**
  * Gestor de productos por consola sobre un fichero CSV.
  *
@@ -71,6 +72,9 @@ public class GestorProductosRA1 {
             System.out.println("7. Importar TSV a CSV");
             System.out.println("8. Crear copia de seguridad");
             System.out.println("9. Listar copias de seguridad");
+            System.out.println("10. Exportar CSV a JSON");
+            System.out.println("11. Importar JSON a CSV");
+            System.out.println("0. Salir");
 
             String opcion = sc.nextLine();
 
@@ -82,10 +86,10 @@ public class GestorProductosRA1 {
                     añadirProducto();
                     break;
                 case "3":
-                    System.out.print("Escríbeme el ID del producto a buscar: ");
+                    System.out.print("Escribe el ID del producto a buscar: ");
                     try {
                         int idBuscar = Integer.parseInt(sc.nextLine());
-                        Producto p = buscarProductoPorId(idBuscar); // Busca sin imprimir
+                        Producto p = buscarProductoPorId(idBuscar);
                         if (p != null) {
                             System.out.println("ENCONTRADO -> " + p.toString());
                         } else {
@@ -114,6 +118,12 @@ public class GestorProductosRA1 {
                     break;
                 case "9":
                     listarBackups();
+                    break;
+                case "10":
+                    exportarAJson();
+                    break;
+                case "11":
+                    importarDeJson();
                     break;
                 case "0":
                     System.out.println("¡Saliendo del programa. Hasta pronto!");
@@ -179,8 +189,7 @@ public class GestorProductosRA1 {
                 String[] campos = linea.split(";", -1);
                 //Comprueba que el split haya generado exactamente 3 trozos (ID, Nombre, Precio)
                 //y que el primer trozo (el ID) no esté vacío
-                //El '-1' obliga a conservar los trozos aunque estén vacíos al final de la línea, 
-                //evitando errores si falta un dato.
+                // -1 para no perder campos vacíos
                 if (campos.length == 3 && !campos[0].isEmpty()) {
                     int id = Integer.parseInt(campos[0]);
                     String nombre = campos[1];
@@ -193,7 +202,7 @@ public class GestorProductosRA1 {
             }
 
         } catch (FileNotFoundException e) {
-            System.err.println("Fichero no encontrado: " + e.getMessage()); // Captura específica primero
+            System.err.println("Fichero no encontrado: " + e.getMessage()); 
         } catch (IOException e) {
             System.err.println("Error de lectura: " + e.getMessage());
         }
@@ -208,8 +217,7 @@ public class GestorProductosRA1 {
      */
     public static boolean existeID(int idBuscar) throws IOException {
         File archivo = rutacsv.toFile();
-        //Comprobación rápida de seguridad. Si el archivo ni siquiera existe todavía,
-        //es imposible que el ID esté ahí, así que devuelve false directamente sin hacer nada más.
+        //Si no existe el fichero, el ID no puede estar
         if (!archivo.exists()) {
             return false;
         }
@@ -222,8 +230,7 @@ public class GestorProductosRA1 {
                     primeraLinea = false;
                     continue;
                 }
-                //El '-1' obliga a conservar los trozos aunque estén vacíos al final de la línea, evitando errores si falta un dato.
-                //Verifica que el array tenga al menos 1 posición (el ID)y que no sea un texto en blanco
+                // -1 para no perder campos vacíos
                 String[] campos = linea.split(";", -1);
                 if (campos.length >= 1 && !campos[0].isEmpty()) {
                     int idActual = Integer.parseInt(campos[0]);
@@ -266,7 +273,7 @@ public class GestorProductosRA1 {
                     if (idActual == idBuscar) {
                         String nombre = campos[1];
                         double precio = Double.parseDouble(campos[2]);
-                        //Al encontrarlo, construye y devuelve el objeto Producto listo para usarse
+                        //Al encontrarlo, construye y devuelve el objeto Producto
                         return new Producto(idActual, nombre, precio);
                     }
                 }
@@ -378,7 +385,7 @@ public class GestorProductosRA1 {
                 }
             }
 
-            //Reemplazar el fichero original de forma atómica con NIO.2
+            // Reemplazo el original por el temporal
             Files.move(rutaTemp, rutacsv, StandardCopyOption.REPLACE_EXISTING);
             System.out.println("Producto eliminado correctamente.");
 
@@ -412,7 +419,7 @@ public class GestorProductosRA1 {
              * el campo en dos. Por ejemplo, "Teclado; mecánico" pasaría a tener 4 columnas 
              * en lugar de 3. Esto corrompe el array resultante y causará una 
              * ArrayIndexOutOfBoundsException o NumberFormatException al leerlo. 
-             * Para evitarlo en entornos reales, los campos conflictivos deben ir entrecomillados.
+             * Para evitarlo deben ir entrecomillas.
              */
         } catch (IOException e) {
             System.out.println("Error al exportar a TSV: " + e.getMessage());
@@ -456,11 +463,6 @@ public class GestorProductosRA1 {
             // Obtiene la fecha/hora exacta actual (LocalDateTime) y 
             //crea una regla de formato (DateTimeFormatter) para convertirla en texto "AñoMesDía_HoraMinSeg".
             String fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-
-            
-            
-            
-            
             Path origen = rutacsv;
             Path destino = Paths.get("backups/productos_" + fecha + ".csv");
 
@@ -489,6 +491,105 @@ public class GestorProductosRA1 {
             for (File f : archivos) {
                 System.out.println("- " + f.getName());
             }
+        }
+    }
+
+    /**
+     * Exporta el contenido del archivo CSV original a un archivo en formato
+     * JSON simple.
+     * <p>
+     * Este método lee el fichero {@code productos.csv}, omite la cabecera y
+     * transforma cada registro en un objeto JSON dentro de un array. La
+     * escritura se realiza con un bloque try-with-resources para garantizar el
+     * cierre seguro de los flujos.
+     * </p>
+     */
+    public static void exportarAJson() {
+        Path rutaJson = Paths.get("datos/productos.json");
+
+        try (BufferedReader br = Files.newBufferedReader(rutacsv); BufferedWriter bw = Files.newBufferedWriter(rutaJson)) {
+
+            br.readLine(); // Saltamos la cabecera
+            String linea;
+            boolean primero = true;
+
+            bw.write("["); // Abrimos el array JSON
+            bw.newLine();
+
+            while ((linea = br.readLine()) != null) {
+                String[] campos = linea.split(";", -1);
+                if (campos.length == 3 && !campos[0].isEmpty()) {
+                    if (!primero) {
+                        bw.write(",");
+                        bw.newLine();
+                    }
+                    // Construimos la línea con formato JSON 
+                    // String.format rellena la plantilla: cada %s se sustituye por un valor (campos[0], [1], [2]) en orden.
+                    // Las \" son comillas para que salgan dentro del texto del JSON y no cierren el String de Java
+                    String jsonObjeto = String.format("  {\"id\":%s,\"nombre\":\"%s\",\"precio\":%s}",
+                            campos[0], campos[1], campos[2]);
+                    bw.write(jsonObjeto);
+                    primero = false;
+                }
+            }
+
+            bw.newLine();
+            bw.write("]"); // Cerramos el array JSON
+            System.out.println("Fichero exportado a JSON correctamente.");
+
+        } catch (IOException e) {
+            System.out.println("Error al exportar a JSON: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Importa los datos de un archivo JSON simple y sobrescribe el fichero CSV
+     * principal.
+     * <p>
+     * Este método lee el fichero {@code productos.json} secuencialmente,
+     * extrayendo los valores de ID, nombre y precio mediante manipulación de
+     * cadenas (sin librerías externas), y los reescribe en
+     * {@code productos.csv} restaurando la cabecera y los separadores ( ; ).
+     * </p>
+     */
+    public static void importarDeJson() {
+        Path rutaJson = Paths.get("datos/productos.json");
+
+        if (!Files.exists(rutaJson)) {
+            System.out.println("Error: El archivo JSON no existe.");
+            return;
+        }
+
+        try (BufferedReader br = Files.newBufferedReader(rutaJson); BufferedWriter bw = Files.newBufferedWriter(rutacsv)) {
+            // Devolvemos la cabecera obligatoria
+            bw.write("ID;NOMBRE;PRECIO"); 
+            bw.newLine();
+
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                linea = linea.trim();
+
+                // Ignorar apertura/cierre de array y líneas vacías
+                if (linea.equals("[") || linea.equals("]") || linea.isEmpty()) {
+                    continue;
+                }
+
+                try {
+                    // Extraemos los valores ubicando las etiquetas JSON
+                    String id = linea.substring(linea.indexOf("\"id\":") + 5, linea.indexOf(",\"nombre\"")).trim();
+                    String nombre = linea.substring(linea.indexOf("\"nombre\":\"") + 10, linea.indexOf("\",\"precio\""));
+                    String precio = linea.substring(linea.indexOf("\"precio\":") + 9, linea.indexOf("}")).trim();
+
+                    bw.write(id + ";" + nombre + ";" + precio);
+                    bw.newLine();
+                } catch (Exception ex) {
+                    System.out.println("Línea JSON ignorada por formato inválido: " + linea);
+                }
+            }
+            System.out.println("Fichero importado desde JSON correctamente.");
+
+        } catch (IOException e) {
+            System.out.println("Error al importar desde JSON: " + e.getMessage());
         }
     }
 }

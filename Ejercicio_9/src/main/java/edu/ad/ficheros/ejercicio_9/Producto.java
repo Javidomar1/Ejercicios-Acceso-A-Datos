@@ -1,7 +1,6 @@
 package edu.ad.ficheros.ejercicio_9;
 
 public class Producto {
-    // Atributos con la primera letra en mayúscula (y corregido el error de "recio")
     private int ID;
     private String Nombre;
     private double Precio;
@@ -14,7 +13,7 @@ public class Producto {
             throw new ProductoInvalidoException("Debe tener nombre");
         }
         if (precio < 0) {
-            throw new ProductoInvalidoException("El precio no puede ser negativo");
+            throw new ProductoInvalidoException("El precio no puede ser negativo" );
         }
         
         this.ID = id;
